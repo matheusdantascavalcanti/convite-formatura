@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convite de Formatura</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inconsolata:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Tema Tokyo Night para o bloco de código */
+        .tokyo-night {
+            background-color: #1a1b26;
+            color: #c0caf5;
+        }
+
+        .tokyo-night .keyword {
+            color: #7aa2f7;
+        }
+
+        .tokyo-night .string {
+            color: #9ece6a;
+        }
+
+        .tokyo-night .comment {
+            color: #565f89;
+            font-style: italic;
+        }
+
+        /* Container e efeito glitch */
+        .invite-container {
+            border: 2px solid #ff00ff;
+            box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+            border-radius: 0.75rem;
+            background: rgba(10, 10, 15, 0.75);
+            backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glitch {
+            position: relative;
+            font-family: 'Orbitron', sans-serif;
+            color: #f4f142;
+            animation: glitch 2s infinite;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .glitch::before {
+            animation: glitchTop 2s infinite;
+            clip-path: inset(0 0 51% 0);
+            color: #00ffff;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitchBottom 2s infinite;
+            clip-path: inset(51% 0 0 0);
+            color: #ff00ff;
+            z-index: -2;
+        }
+
+        @keyframes glitch {
+
+            0%,
+            100% {
+                transform: none;
+            }
+
+            20%,
+            60% {
+                transform: skew(0.5deg);
+            }
+
+            40%,
+            80% {
+                transform: skew(-0.5deg);
+            }
+        }
+
+        @keyframes glitchTop {
+            0% {
+                transform: translate(0, -2px);
+            }
+
+            20% {
+                transform: translate(-2px, 2px);
+            }
+
+            40% {
+                transform: translate(-2px, -2px);
+            }
+
+            60% {
+                transform: translate(2px, 2px);
+            }
+
+            80% {
+                transform: translate(2px, -2px);
+            }
+
+            100% {
+                transform: translate(0, -2px);
+            }
+        }
+
+        @keyframes glitchBottom {
+            0% {
+                transform: translate(0, 2px);
+            }
+
+            20% {
+                transform: translate(2px, -2px);
+            }
+
+            40% {
+                transform: translate(2px, 2px);
+            }
+
+            60% {
+                transform: translate(-2px, -2px);
+            }
+
+            80% {
+                transform: translate(-2px, 2px);
+            }
+
+            100% {
+                transform: translate(0, 2px);
+            }
+        }
+
+        /* Efeito brilho retro */
+        .retro-text {
+            animation: neonGlitter 1.5s infinite alternate;
+            font-family: 'Inconsolata', monospace;
+        }
+
+        @keyframes neonGlitter {
+            from {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff;
+                color: #fff;
+            }
+
+            to {
+                text-shadow: 0 0 20px #f4f142, 0 0 30px #f4f142;
+                color: #f4f142;
+            }
+        }
+
+        /* Botão neon */
+        .btn-neon {
+            border: 2px solid #00ffff;
+            background: transparent;
+            transition: box-shadow .2s, color .2s;
+        }
+
+        .btn-neon:hover {
+            box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+            color: #ff00ff;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-[#1a1b26] text-white p-4 relative">
+
+    <!-- Tela da IDE simulada -->
+    <div id="ideScreen" class="tokyo-night rounded-lg shadow-lg w-full max-w-2xl overflow-x-auto p-4 sm:p-6">
+        <pre class="whitespace-pre-wrap"><code>
+<span class="keyword">function</span> <span class="keyword">gerarConvite</span>() {
+  <span class="keyword">const</span> nome = <span class="string">"Matheus Dantas"</span>;
+  <span class="keyword">const</span> evento = <span class="string">"Formatura de Matheus"</span>;
+  <span class="keyword">const</span> subtitulo = <span class="string">"Finalmente garoto de programa!"</span>;
+  <span class="keyword">const</span> data = <span class="string">"06/07/2025"</span>;
+  <span class="keyword">const</span> hora = <span class="string">"12:00"</span>;
+  <span class="keyword">const</span> local = <span class="string">"Residencial Valle Verano\nAv. Manoel Morais, 632"</span>;
+  <span class="comment"># Abaixo: clique no botão "Rodar código" para exibir o convite!</span>
+}
+    </code></pre>
+        <button id="runBtn"
+            class="mt-4 px-4 py-2 bg-[#7aa2f7] text-[#1a1b26] font-semibold rounded hover:bg-[#5c6ac4] transition w-full sm:w-auto">
+            Rodar código
+        </button>
+    </div>
+
+    <!-- Tela do convite estilizado -->
+    <div id="inviteScreen"
+        class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black p-4 sm:p-8 transition-opacity duration-700 opacity-0">
+        <div
+            class="invite-container relative mx-auto w-full max-w-sm sm:max-w-md text-center px-4 py-6 sm:px-8 sm:py-10">
+            <!-- Mobile back arrow inside container -->
+            <button id="mobileBackBtn" class="sm:hidden absolute top-4 left-4 text-2xl text-gray-300">
+                ←
+            </button>
+            <h1 class="glitch text-3xl sm:text-4xl md:text-5xl" data-text="Formatura de Matheus">Formatura de Matheus
+            </h1>
+            <p class="font-inconsolata text-base sm:text-lg text-gray-300 mb-4">Finalmente garoto de programa!</p>
+            <div class="text-gray-400 space-y-1 text-left mb-4 text-sm sm:text-base">
+                <p>↳ Evento: Formatura em Ciência da Computação</p>
+                <p>↳ Data: 06/07/2025</p>
+                <p>↳ Hora: 12:00</p>
+                <p>↳ Local: Residencial Valle Verano<br>Av. Manoel Morais, 632</p>
+            </div>
+            <p class="font-inconsolata mb-4 retro-text text-sm sm:text-base">
+                Depois de muito café, linhas de código e bugs, tenho o prazer de te convidar para o meu delicioso
+                churrasco de formatura!<br>
+                Sua presença tornará esse dia ainda mais especial. Agradeço desde já!
+            </p>
+            <!-- Embed da playlist colaborativa Spotify -->
+            <div class="mt-6 w-full">
+                <iframe style="border-radius:12px"
+                    src="https://open.spotify.com/embed/playlist/183z5mkmpHNv9UUWDCAbtR?utm_source=generator&theme=0"
+                    width="100%" height="152" frameborder="0"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"></iframe>
+                <p class="text-xs text-gray-500 mt-1 text-center">
+                    Abra a playlist no app Spotify para adicionar faixas — certifique-se de que ela seja colaborativa!
+                </p>
+            </div>
+            <!-- Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+                <button id="confirmBtn" class="btn-neon px-6 py-2 font-semibold rounded w-full sm:w-auto"
+                    onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ','_blank')">
+                    Confirme sua presença
+                </button>
+                <button id="backBtn" class="btn-neon px-6 py-2 font-semibold rounded w-full sm:w-auto hidden sm:block">
+                    Voltar ao IDE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Música de fundo -->
+    <audio id="bgMusic" src="ageispolis.mp3" loop autoplay preload="auto"></audio>
+
+    <script>
+        const runBtn = document.getElementById('runBtn');
+        const backBtn = document.getElementById('backBtn');
+        const mobileBackBtn = document.getElementById('mobileBackBtn');
+        const ide = document.getElementById('ideScreen');
+        const invite = document.getElementById('inviteScreen');
+        const music = document.getElementById('bgMusic');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            music.play().catch(err => console.warn('Autoplay bloqueado:', err));
+        });
+
+        runBtn.addEventListener('click', () => {
+            ide.classList.add('opacity-0');
+            setTimeout(() => ide.classList.add('hidden'), 700);
+            invite.classList.remove('hidden');
+            setTimeout(() => invite.classList.add('opacity-100'), 50);
+            music.play().catch(() => { });
+        });
+
+        function showIDE() {
+            invite.classList.remove('opacity-100');
+            invite.classList.add('opacity-0');
+            setTimeout(() => invite.classList.add('hidden'), 700);
+            ide.classList.remove('hidden');
+            setTimeout(() => ide.classList.remove('opacity-0'), 50);
+            music.pause(); music.currentTime = 0;
+        }
+
+        backBtn.addEventListener('click', showIDE);
+        mobileBackBtn.addEventListener('click', showIDE);
+    </script>
+</body>
+
+</html>
+</body>
+
+</html>
