@@ -355,9 +355,23 @@ Av. Manoel Morais, 632"</span>;
             const clone = tpl.content.cloneNode(true);
             document.body.appendChild(clone);
 
-            // Toca música de fundo
             const music = document.getElementById('bgMusic');
-            music?.play().catch(() => { });
+
+            // Função que pausa ou toca conforme visibilidade
+            function handleVisibilityChange() {
+                if (document.hidden) {
+                    music.pause();
+                } else {
+                    music.play().catch(err => {
+                        // Se precisar tratar erro de autoplay
+                        console.warn('Não foi possível tocar a música:', err);
+                    });
+                }
+            }
+
+            // Registra o listener
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+
 
             // Seleciona elementos e registra listeners
             const ide = document.getElementById('ideScreen');
