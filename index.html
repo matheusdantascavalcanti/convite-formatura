@@ -77,6 +77,10 @@
             z-index: -2;
         }
 
+        .buttons {
+            align-items: center;
+        }
+
         @keyframes glitch {
 
             0%,
@@ -190,17 +194,6 @@
                 padding: 1.5rem 2rem !important;
             }
 
-            /* Os detalhes do evento ficam em duas colunas, reduzindo altura */
-            .invite-container .text-gray-400.space-y-1 {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.5rem 1rem;
-            }
-
-            .invite-container .text-gray-400.space-y-1>p {
-                margin-bottom: 0;
-            }
-
             /* Diminui ligeiramente fontes e espaçamentos verticais */
             .glitch {
                 font-size: 2rem !important;
@@ -253,7 +246,7 @@
                     <p class="text-xs text-gray-500 mt-1 text-center">Abra a playlist no Spotify para adicionar suas
                         faixas favoritas</p>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+                <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6 buttons">
                     <button id="vouBtn" class="btn-neon px-6 py-2 font-semibold rounded w-full sm:w-auto">Vou!</button>
                     <button id="naoVouBtn" class="btn-neon px-6 py-2 font-semibold rounded w-full sm:w-auto">Vou
                         não</button>
