@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
     <title>Convite de Formatura</title>
     <!-- Tailwind CSS via CDN -->
+    <!-- Biblioteca MD5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link
@@ -173,115 +176,230 @@
             box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
             color: #ff00ff;
         }
+
+        /* Ajustes para telas com altura até 800px (notebooks mais “baixos”) */
+        @media (max-height: 800px) {
+
+            .mt-6 .w-full {
+                width: 80% !important;
+            }
+
+            /* Torna o container bem mais largo, até 80% da viewport width */
+            .invite-container {
+                max-width: 80vw !important;
+                padding: 1.5rem 2rem !important;
+            }
+
+            /* Os detalhes do evento ficam em duas colunas, reduzindo altura */
+            .invite-container .text-gray-400.space-y-1 {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem 1rem;
+            }
+
+            .invite-container .text-gray-400.space-y-1>p {
+                margin-bottom: 0;
+            }
+
+            /* Diminui ligeiramente fontes e espaçamentos verticais */
+            .glitch {
+                font-size: 2rem !important;
+            }
+
+            .retro-text {
+                font-size: 0.9rem !important;
+            }
+
+            .btn-neon {
+                font-size: 0.9rem !important;
+                padding: 0.5rem 1rem !important;
+            }
+
+            /* Reduz altura do iframe para o player */
+            iframe {
+                height: 100px !important;
+            }
+        }
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center bg-[#1a1b26] text-white p-4 relative">
+<body class="h-screen overflow-y-auto flex items-center justify-center bg-[#1a1b26] text-white p-4 relative">
 
-    <!-- Tela da IDE simulada -->
-    <div id="ideScreen" class="tokyo-night rounded-lg shadow-lg w-full max-w-2xl overflow-x-auto p-4 sm:p-6">
-        <pre class="whitespace-pre-wrap"><code>
+    <!-- Template com o convite (injetado somente após autorização) -->
+    <template id="invite-template">
+        <div id="inviteScreen"
+            class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black p-4 sm:p-8 transition-opacity duration-700 opacity-0">
+            <div
+                class="invite-container relative mx-auto w-full max-w-sm sm:max-w-md text-center px-4 py-6 sm:px-8 sm:py-10">
+                <button id="mobileBackBtn" class="sm:hidden absolute top-4 left-4 text-2xl text-gray-300">←</button>
+                <h1 class="glitch text-3xl sm:text-4xl md:text-5xl" data-text="Formatura de Matheus">Formatura de
+                    Matheus</h1>
+                <p class="font-inconsolata text-base sm:text-lg text-gray-300 mb-4">Finalmente garoto de programa!</p>
+                <div class="text-gray-400 space-y-1 text-left mb-4 text-sm sm:text-base">
+                    <p>↳ Evento: Formatura em Ciência da Computação</p>
+                    <p>↳ Data: 06/07/2025</p>
+                    <p>↳ Hora: 12:00</p>
+                    <p>↳ Local: Salão de Festas do Residencial Valle Verano<br>Av. Manoel Morais, 632</p>
+                </div>
+                <p class="font-inconsolata mb-4 retro-text text-sm sm:text-base">Depois de muito café, linhas de código
+                    e bugs, tenho o prazer de te convidar para o meu delicioso churrasco de formatura!<br>Sua presença
+                    tornará esse dia ainda mais especial. Agradeço desde já!</p>
+                <div class="mt-6 w-full">
+                    <iframe style="border-radius:12px"
+                        src="https://open.spotify.com/embed/playlist/183z5mkmpHNv9UUWDCAbtR?utm_source=generator&theme=0"
+                        width="100%" height="152" frameborder="0"
+                        allow="autoplay; clipboard-write; encrypted-media;fullscreen;picture-in-picture"
+                        loading="lazy"></iframe>
+                    <p class="text-xs text-gray-500 mt-1 text-center">Abra a playlist no Spotify para adicionar suas
+                        faixas favoritas</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+                    <button id="vouBtn" class="btn-neon px-6 py-2 font-semibold rounded w-full sm:w-auto">Vou!</button>
+                    <button id="naoVouBtn" class="btn-neon px-6 py-2 font-semibold rounded w-full sm:w-auto">Vou
+                        não</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela da IDE simulada -->
+        <div id="ideScreen"
+            class="tokyo-night rounded-lg shadow-lg w-full max-w-2xl overflow-y-auto max-h-[calc(100vh-4rem)] p-4 sm:p-6">
+            <pre class="whitespace-pre-wrap"><code>
 <span class="keyword">function</span> <span class="keyword">gerarConvite</span>() {
   <span class="keyword">const</span> nome = <span class="string">"Matheus Dantas"</span>;
   <span class="keyword">const</span> evento = <span class="string">"Formatura de Matheus"</span>;
   <span class="keyword">const</span> subtitulo = <span class="string">"Finalmente garoto de programa!"</span>;
   <span class="keyword">const</span> data = <span class="string">"06/07/2025"</span>;
   <span class="keyword">const</span> hora = <span class="string">"12:00"</span>;
-  <span class="keyword">const</span> local = <span class="string">"Residencial Valle Verano\nAv. Manoel Morais, 632"</span>;
+  <span class="keyword">const</span> local = <span class="string">"Salão de Festas do Residencial Valle Verano
+Av. Manoel Morais, 632"</span>;
   <span class="comment"># Abaixo: clique no botão "Rodar código" para exibir o convite!</span>
 }
-    </code></pre>
-        <button id="runBtn"
-            class="mt-4 px-4 py-2 bg-[#7aa2f7] text-[#1a1b26] font-semibold rounded hover:bg-[#5c6ac4] transition w-full sm:w-auto">
-            Rodar código
-        </button>
-    </div>
-
-    <!-- Tela do convite estilizado -->
-    <div id="inviteScreen"
-        class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black p-4 sm:p-8 transition-opacity duration-700 opacity-0">
-        <div
-            class="invite-container relative mx-auto w-full max-w-sm sm:max-w-md text-center px-4 py-6 sm:px-8 sm:py-10">
-            <!-- Mobile back arrow inside container -->
-            <button id="mobileBackBtn" class="sm:hidden absolute top-4 left-4 text-2xl text-gray-300">
-                ←
-            </button>
-            <h1 class="glitch text-3xl sm:text-4xl md:text-5xl" data-text="Formatura de Matheus">Formatura de Matheus
-            </h1>
-            <p class="font-inconsolata text-base sm:text-lg text-gray-300 mb-4">Finalmente garoto de programa!</p>
-            <div class="text-gray-400 space-y-1 text-left mb-4 text-sm sm:text-base">
-                <p>↳ Evento: Formatura em Ciência da Computação</p>
-                <p>↳ Data: 06/07/2025</p>
-                <p>↳ Hora: 12:00</p>
-                <p>↳ Local: Residencial Valle Verano<br>Av. Manoel Morais, 632</p>
-            </div>
-            <p class="font-inconsolata mb-4 retro-text text-sm sm:text-base">
-                Depois de muito café, linhas de código e bugs, tenho o prazer de te convidar para o meu delicioso
-                churrasco de formatura!<br>
-                Sua presença tornará esse dia ainda mais especial. Agradeço desde já!
-            </p>
-            <!-- Embed da playlist colaborativa Spotify -->
-            <div class="mt-6 w-full">
-                <iframe style="border-radius:12px"
-                    src="https://open.spotify.com/embed/playlist/183z5mkmpHNv9UUWDCAbtR?utm_source=generator&theme=0"
-                    width="100%" height="152" frameborder="0"
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    loading="lazy"></iframe>
-                <p class="text-xs text-gray-500 mt-1 text-center">
-                    Abra a playlist no app Spotify para adicionar faixas — certifique-se de que ela seja colaborativa!
-                </p>
-            </div>
-            <!-- Buttons -->
-            <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-                <button id="confirmBtn" class="btn-neon px-6 py-2 font-semibold rounded w-full sm:w-auto"
-                    onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ','_blank')">
-                    Confirme sua presença
-                </button>
-                <button id="backBtn" class="btn-neon px-6 py-2 font-semibold rounded w-full sm:w-auto hidden sm:block">
-                    Voltar ao IDE
-                </button>
-            </div>
+        </code></pre>
+            <button id="runBtn"
+                class="mt-4 px-4 py-2 bg-[#7aa2f7] text-[#1a1b26] font-semibold rounded hover:bg-[#5c6ac4] transition w-full sm:w-auto">Rodar
+                código</button>
         </div>
-    </div>
+    </template>
+
 
     <!-- Música de fundo -->
     <audio id="bgMusic" src="ageispolis.mp3" loop autoplay preload="auto"></audio>
 
     <script>
-        const runBtn = document.getElementById('runBtn');
-        const backBtn = document.getElementById('backBtn');
-        const mobileBackBtn = document.getElementById('mobileBackBtn');
-        const ide = document.getElementById('ideScreen');
-        const invite = document.getElementById('inviteScreen');
-        const music = document.getElementById('bgMusic');
+        // Configuração de hashes de senhas
+        const allowedHashes = {
+            '1b3231655cebb7a1f783eddf27d254ca': 'teste',
+            'd828a5b9b09b334ce76bf241ca16c4eb': 'pai',
+            '4ead98a85024a34f9b37d6ec9320a181': 'mãe',
+            '5d933eef19aee7da192608de61b6c23d': 'titi',
+            'a74f19915c2c5e7ee36a7138c515b4cd': 'boli',
+            '7ca7af099a3476cbf7988a7efc75317d': 'tonho',
+            '62d4984cda63f34f38b778f4532a50f8': 'hevelyn',
+            '4a5d8becb9d22fa0267c7414ca70655f': 'barroso',
+            '18c24328fcf8e92d333f6bb50f144efe': 'fuinha', // felipe
+            '69bfc4ef467b367e3515cdcf693e65db': 'lele', // leticia
+            '328573e80f3dfc694143f580ba74b1ed': 'patos',
 
-        window.addEventListener('DOMContentLoaded', () => {
-            music.play().catch(err => console.warn('Autoplay bloqueado:', err));
-        });
 
-        runBtn.addEventListener('click', () => {
-            ide.classList.add('opacity-0');
-            setTimeout(() => ide.classList.add('hidden'), 700);
-            invite.classList.remove('hidden');
-            setTimeout(() => invite.classList.add('opacity-100'), 50);
-            music.play().catch(() => { });
-        });
+            '5da2297bad6924526e48e00dbfc3c27a': 'amor',
+            '892a9944cf14665375630c06a1902152': 'wawa',
+            '751b1986a8a7b0558ef563800200acce': 'guga',
+            '3bb12c6c90f45d41fdf3c3d408ae7df9': 'adry',
+            '19984dcaea13176bbb694f62ba6b5b35': 'andre',
+            '4df055c5a76cccc7fb9d02c18858a07c': 'freire',
+            '168d3c263aa44687fc3f8e78ad56d869': 'yasmin',
+            'e5e9b41c8f1ad39ffb22df4a7aa7d876': 'brenda',
+            '1f260fa281fb68be2a991eb6edc345fb': 'bruna',
+            '4178c433aeb1ce7e13e4618806899451': 'sobreira',
+            '89e2c8f458dda133118ac4a0a762cb3d': 'bambam',
+            'f4b84e0c547f6957efd60f8e4a6d8946': 'rodz', // rodrigo
+            'e7662298f922dd9700c9af5363ca0a43': 'bia',
+            '3feb2d8fe13b4e9c3c81de0734257103': 'belle',
+            '7e04da88cbb8cc933c7b89fbfe121cca': 'felipe',
+            'b1addb387108848347fb505422eb91a7': 'guigo',
+            'ffc150a160d37e92012c196b6af4160d': 'victor',
+            '4aa606997465fd6fc4e825ff8695fcdf': 'davi',
+            'd701fde59d74f76803087b6632186caf': 'vlad',
+            '9eb0c9605dc81a68731f61b3e0838937': 'miguel',
+            'fb79830ab7684da94013fb5b6636c475': 'vidal',
+            '8f84ff3b2d2442da8a4e4fd0f770dcb2': 'vini',
+            '10c7ccc7a4f0aff03c915c485565b9da': 'ryan',
+        };
+        const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSeLGiuG0U42nopb559mMbhdgeYVscu28UaJhiksFyy-83FRHA/formResponse';
+        const formEntry = 'entry.393951574';
+        const formNegativeEntry = 'entry.775824531';
 
-        function showIDE() {
-            invite.classList.remove('opacity-100');
-            invite.classList.add('opacity-0');
-            setTimeout(() => invite.classList.add('hidden'), 700);
-            ide.classList.remove('hidden');
-            setTimeout(() => ide.classList.remove('opacity-0'), 50);
-            music.pause(); music.currentTime = 0;
+        // Função para calcular hash MD5 (blueimp-md5)
+        function hashMd5(str) {
+            return window.md5(str || '');
         }
 
-        backBtn.addEventListener('click', showIDE);
-        mobileBackBtn.addEventListener('click', showIDE);
-    </script>
-</body>
+        document.addEventListener('DOMContentLoaded', () => {
+            let token = localStorage.getItem('guestToken');
+            let hash = token ? hashMd5(token) : null;
 
-</html>
+            // Se não tiver token OU token inválido, pede nova senha
+            if (!token || !allowedHashes[hash]) {
+                token = prompt('Insira sua senha única para acessar o convite:');
+                hash = hashMd5(token);
+                if (!allowedHashes[hash]) {
+                    document.body.innerHTML = '<h1 class="text-white text-center text-2xl">Acesso negado</h1>';
+                    return;
+                }
+                localStorage.setItem('guestToken', token);
+            }
+
+            // Autorizado: injeta o convite
+            const tpl = document.getElementById('invite-template');
+            const clone = tpl.content.cloneNode(true);
+            document.body.appendChild(clone);
+
+            // Toca música de fundo
+            const music = document.getElementById('bgMusic');
+            music?.play().catch(() => { });
+
+            // Seleciona elementos e registra listeners
+            const ide = document.getElementById('ideScreen');
+            const invite = document.getElementById('inviteScreen');
+            const runBtn = document.getElementById('runBtn');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const backBtn = document.getElementById('backBtn');
+            const mobileBackBtn = document.getElementById('mobileBackBtn');
+
+            runBtn.addEventListener('click', () => {
+                ide.classList.add('opacity-0');
+                setTimeout(() => ide.classList.add('hidden'), 700);
+                invite.classList.remove('hidden');
+                setTimeout(() => invite.classList.add('opacity-100'), 50);
+                music.play().catch(() => { });
+            });
+
+            function showIDE() {
+                invite.classList.remove('opacity-100');
+                invite.classList.add('opacity-0');
+                setTimeout(() => invite.classList.add('hidden'), 700);
+                ide.classList.remove('hidden');
+                setTimeout(() => ide.classList.remove('opacity-0'), 50);
+                music.pause();
+                music.currentTime = 0;
+            }
+
+            vouBtn.addEventListener('click', () => {
+                const token = localStorage.getItem('guestToken');
+                fetch(`${formUrl}?${formEntry}=${encodeURIComponent(token)}`, { mode: 'no-cors' });
+                window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+            });
+            naoVouBtn.addEventListener('click', () => {
+                const token = localStorage.getItem('guestToken');
+                fetch(`${formUrl}?${formNegativeEntry}=${encodeURIComponent(token)}`, { mode: 'no-cors' });
+                window.open('https://pranx.com/fake-virus/', '_blank');
+            });
+
+            backBtn.addEventListener('click', showIDE);
+            mobileBackBtn.addEventListener('click', showIDE);
+        });
+    </script>
 </body>
 
 </html>
