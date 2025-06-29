@@ -10,12 +10,29 @@
     <!-- Biblioteca MD5 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Seta --vh como 1% da altura interna real da janela
+        function setVh() {
+            document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        }
+        window.addEventListener('load', setVh);
+        window.addEventListener('resize', setVh);
+    </script>
+
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inconsolata:wght@400;700&display=swap"
         rel="stylesheet">
     <style>
+        html,
+        body {
+            height: calc(var(--vh) * 100);
+            margin: 0;
+            padding: 0;
+        }
+
         /* Tema Tokyo Night para o bloco de código */
+
         .tokyo-night {
             background-color: #1a1b26;
             color: #c0caf5;
@@ -216,7 +233,7 @@
     </style>
 </head>
 
-<body class="h-screen overflow-y-auto flex items-center justify-center bg-[#1a1b26] text-white p-4 relative">
+<body class="overflow-y-auto flex items-center justify-center bg-[#1a1b26] text-white p-4 relative">
 
     <!-- Template com o convite (injetado somente após autorização) -->
     <template id="invite-template">
